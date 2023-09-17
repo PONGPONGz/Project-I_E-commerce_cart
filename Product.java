@@ -3,15 +3,16 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Product {
+    private static ArrayList<Product> availableProducts = new ArrayList<>();
+
     private int id;
     private String name;
     private String description;
     private float price;
     private int stockCount;
 
-    public static ArrayList<Product> loadProductsFromCSV(String filepath)
+    public static void loadProductsFromCSV(String filepath)
     {
-        ArrayList<Product> products = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filepath)))
         {
             reader.readLine();          // Ignore first line of csv
@@ -25,7 +26,7 @@ public class Product {
                 String productDescription = product[2];
                 float price               = Float.parseFloat(product[3]);
 
-                products.add(new Product(productId, productName, price, productDescription, stockCount));
+                availableProducts.add(new Product(productId, productName, price, productDescription, stockCount));
             }
         }
         catch (IOException exception)
@@ -33,7 +34,12 @@ public class Product {
             System.err.println(exception.getMessage());
         }
 
-        return products;
+        System.out.println("#" + availableProducts.size() + " products loaded.");
+    }
+
+    public static ArrayList<Product> getAvailableProducts()
+    {
+        return availableProducts;
     }
 
     public Product(int _id, String _name, float _price, String _description, int _stockCount)

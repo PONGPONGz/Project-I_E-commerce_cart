@@ -22,8 +22,77 @@ public class LinkedList<T> {
         size++;
     }
 
+    public Node<T> getNode(int index)
+    {
+        if (index < 0 || index >= this.size)
+            throw new IndexOutOfBoundsException(index);
+
+        Node<T> currentNode = this.head;
+        while (index-- > 0)
+        {
+            currentNode = currentNode.getNextNode();
+        }
+        return currentNode;
+    }
+
+    public void remove(int index)
+    {
+        if (index >= this.size || index < 0)
+            throw new IndexOutOfBoundsException(index);
+
+        if (index == 0)
+        {
+            this.head = this.head.getNextNode();
+            size--;
+            return;
+        }
+
+        Node<T> previousNode = this.getNode(index - 1);
+        Node<T> forwardNode  = previousNode.getNextNode().getNextNode();
+        previousNode.setNextNode(forwardNode);
+        size--;
+    }
+
+    public void swapByIndex(int index1, int index2) {
+        if (index1 < 0 || index1 >= size || index2 < 0 || index2 >= size) {
+            throw new IndexOutOfBoundsException("Invalid indices: " + index1 + ", " + index2);
+        }
+    
+        Node<T> previousNode1 = (index1 != 0) ? this.getNode(index1 - 1) : null;
+        Node<T> previousNode2 = (index2 != 0) ? this.getNode(index2 - 1) : null;
+        Node<T> node1 = previousNode1 != null ? previousNode1.getNextNode() : this.getNode(index1);
+        Node<T> node2 = previousNode2 != null ? previousNode2.getNextNode() : this.getNode(index2);
+
+        if (previousNode1 != null) 
+        {
+            previousNode1.setNextNode(node2);
+        } 
+        else 
+        {
+            this.head = node2;
+        }
+    
+        if (previousNode2 != null) 
+        {
+            previousNode2.setNextNode(node1);
+        } 
+        else 
+        {
+            this.head = node1;
+        }
+    
+        Node<T> temp = node1.getNextNode();
+        node1.setNextNode(node2.getNextNode());
+        node2.setNextNode(temp);
+    }
+
     public int size()
     {
         return this.size;
+    }
+
+    public Node<T> getHead()
+    {
+        return this.head;
     }
 }

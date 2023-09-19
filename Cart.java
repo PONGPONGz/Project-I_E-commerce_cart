@@ -11,6 +11,15 @@ public class Cart {
         return this.items.size();
     }
 
+    public float getTotalPrice()
+    {
+        float total = 0f;
+        for (Node<Product> product = this.items.getHead(); product != null; product = product.getNextNode())
+            total += product.getData().getPrice();
+
+        return total;
+    }
+
     public void addByProductId(int productId)
     {
         ArrayList<Product> availableProducts = Product.getAvailableProducts();
@@ -38,7 +47,7 @@ public class Cart {
     @Override
     public String toString()
     {
-        String[] allItemsName = new String[this.items.size()];
+        String[] allItemsName = new String[this.items.size() + 1];      // items size + total
         Node<Product> currentNode = this.items.getHead();
         for (int i = 0; i < this.items.size(); i++)
         {
@@ -47,7 +56,7 @@ public class Cart {
             if (currentNode == null)
                 break;
         }
-
+        allItemsName[this.items.size()] = String.valueOf(this.getTotalPrice());
         return String.join(" -> ", allItemsName);
     }
 }

@@ -54,31 +54,30 @@ public class LinkedList<T> {
     }
 
     public void swapByIndex(int index1, int index2) {
-        if (index1 < 0 || index1 >= size || index2 < 0 || index2 >= size) {
+        if (index1 < 0 || index1 >= size || index2 < 0 || index2 >= size) 
             throw new IndexOutOfBoundsException("Invalid indices: " + index1 + ", " + index2);
-        }
     
         Node<T> previousNode1 = (index1 != 0) ? this.getNode(index1 - 1) : null;
         Node<T> previousNode2 = (index2 != 0) ? this.getNode(index2 - 1) : null;
         Node<T> node1 = previousNode1 != null ? previousNode1.getNextNode() : this.getNode(index1);
         Node<T> node2 = previousNode2 != null ? previousNode2.getNextNode() : this.getNode(index2);
 
-        if (previousNode1 != null) 
-        {
-            previousNode1.setNextNode(node2);
-        } 
-        else 
+        if (previousNode1 == null) 
         {
             this.head = node2;
-        }
-    
-        if (previousNode2 != null) 
-        {
-            previousNode2.setNextNode(node1);
         } 
         else 
         {
+            previousNode1.setNextNode(node2);
+        }
+    
+        if (previousNode2 == null) 
+        {
             this.head = node1;
+        } 
+        else 
+        {
+            previousNode2.setNextNode(node1);
         }
     
         Node<T> temp = node1.getNextNode();

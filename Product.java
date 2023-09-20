@@ -11,7 +11,7 @@ public class Product {
     private float price;
     private int stockCount;
 
-    public static void loadProductsFromCSV(String filepath)
+    public static ArrayList<Product> loadProductsFromCSV(String filepath)
     {
         try (BufferedReader reader = new BufferedReader(new FileReader(filepath)))
         {
@@ -34,7 +34,7 @@ public class Product {
             System.err.println(exception.getMessage());
         }
 
-        System.out.println("#" + availableProducts.size() + " products loaded.");
+        return availableProducts;
     }
 
     public static ArrayList<Product> getAvailableProducts()
@@ -74,5 +74,11 @@ public class Product {
     public int getStockCount()
     {
         return this.stockCount;
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("%s - $%.2f", this.name, this.price);
     }
 }

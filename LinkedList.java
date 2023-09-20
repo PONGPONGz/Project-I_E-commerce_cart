@@ -2,6 +2,15 @@ public class LinkedList<T> {
     private Node<T> head;
     private int size = 0;
 
+    public LinkedList(T headData)
+    {
+        this.add(headData);
+    }
+
+    public LinkedList()
+    {
+    }
+
     public void add(T data)
     {
         Node<T> newNode = new Node<T>(data);

@@ -11,7 +11,7 @@ public class LinkedList<T> {
     {
     }
 
-    public void add(T data)
+    public int add(T data)
     {
         Node<T> newNode = new Node<T>(data);
         if (this.head == null)
@@ -28,7 +28,7 @@ public class LinkedList<T> {
             last.setNextNode(newNode);
         }
 
-        size++;
+        return size++;
     }
 
     public Node<T> getNode(int index)
@@ -102,5 +102,15 @@ public class LinkedList<T> {
     public Node<T> getHead()
     {
         return this.head;
+    }
+
+    public T[] toArray()
+    {
+        T[] retval = (T[])new Object[size];
+        int i = 0;
+        for (Node<T> currentNode = this.head; currentNode.getNextNode() != null; currentNode = currentNode.getNextNode())
+            retval[i++] = currentNode.getData();
+
+        return retval;
     }
 }

@@ -1,9 +1,16 @@
 public class Cart {
-    public LinkedList<Product> items;
+    private static final int MAX_CART_ITEMS = 15;
+
+    private LinkedList<Product> items;
 
     public Cart()
     {
         this.items = new LinkedList<>();
+    }
+
+    public LinkedList<Product> getItems()
+    {
+        return this.items;
     }
 
     public int size()

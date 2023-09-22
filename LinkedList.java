@@ -1,4 +1,4 @@
-public class LinkedList<T> {
+public class LinkedList<T> implements List<T>, Iterable<T> {
     private Node<T> head;
     private int size = 0;
 
@@ -11,7 +11,7 @@ public class LinkedList<T> {
     {
     }
 
-    public int add(T data)
+    public void add(T data)
     {
         Node<T> newNode = new Node<T>(data);
         if (this.head == null)
@@ -27,8 +27,12 @@ public class LinkedList<T> {
   
             last.setNextNode(newNode);
         }
+        this.size++;
+    }
 
-        return size++;
+    public T get(int index)
+    {
+        return this.getNode(index).getData();
     }
 
     public Node<T> getNode(int index)
@@ -99,6 +103,11 @@ public class LinkedList<T> {
         return this.size;
     }
 
+    public boolean isEmpty()
+    {
+        return this.size == 0;
+    }
+
     public Node<T> getHead()
     {
         return this.head;
@@ -112,5 +121,28 @@ public class LinkedList<T> {
             retval[i++] = currentNode.getData();
 
         return retval;
+    }
+
+    @Override
+    public java.util.Iterator<T> iterator() {
+        return new java.util.Iterator<T>()
+        {
+            private Node<T> current = head;
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new java.util.NoSuchElementException();
+                }
+                T data = current.getData();
+                current = current.getNextNode();
+                return data;
+            }
+        };
     }
 }

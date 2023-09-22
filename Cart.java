@@ -1,5 +1,5 @@
 public class Cart {
-    private static final int MAX_CART_ITEMS = 15;
+    public static final int MAX_CART_ITEMS = 15;
 
     private LinkedList<Product> items;
 

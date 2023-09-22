@@ -1,7 +1,7 @@
 import java.util.Iterator;
 
 @SuppressWarnings("unchecked")
-public class ArrayList<T> implements Iterable<T> {
+public class ArrayList<T> implements Iterable<T>, List<T> {
     private static final int DEFAULT_SIZE  = 10;    // Default allocation size if no capacity specified in the constructor.
     private static final int OVERGROW_SIZE = 3;     // Amount to preallocate when "data" reaches max capacity.
 

@@ -6,7 +6,8 @@ public class TableRenderer {
 
     private String   title;
     private String   lineSeparator;
-    private String[] columns;
+    private String[] columns;       // columns used to create object (headers without padding)
+    private String[] headers;       // headers with padding included
     private int      numColumn;
     private int[]    columnWidths;
     private LinkedList<String[]> data;
@@ -40,22 +41,28 @@ public class TableRenderer {
         return lines;
     }
 
-    public void updateData(LinkedList<String[]> data)
+    private void calculateColumnWidths()
     {
-        this.data = data;
-
-        for (int i = 0; i < data.getHead().getData().length; i++)
-        {
-            int maxLength = 0;
-            for (int j = 0; j < data.size(); j++)
-            {
-                Node<String[]> currentColumn = data.getNode(j);
-                int currentColumnWidth = currentColumn.getData()[i].length();
-                if (currentColumnWidth > maxLength)
-                    maxLength = Math.min(currentColumnWidth, MAX_COLUMN_WIDTH);
+        this.columnWidths = new int[this.numColumn];
+        for (int i = 0; i < this.numColumn; i++) {
+            int maxLength = this.columns[i].length();
+            for (String[] row : this.data) {
+                int cellLength = row[i].length();
+                if (cellLength > maxLength) {
+                    maxLength = cellLength;
+                }
             }
-            columnWidths[i] = Math.max(maxLength, (this.columnWidths[i] - (PADDING * 2))) + (PADDING * 2);
+            this.columnWidths[i] = Math.min(maxLength, MAX_COLUMN_WIDTH) + (PADDING * 2);
         }
+    }
+
+    public void update(String[] headers, LinkedList<String[]> data)
+    {
+        this.columns = headers;
+        this.headers = headers;
+        this.data = data;
+        calculateColumnWidths();
+        justifyHeaders();
 
         String[] temp = new String[numColumn];
         for (int i = 0; i < numColumn; i++)
@@ -71,31 +78,14 @@ public class TableRenderer {
     public TableRenderer(String title, String[] headers, LinkedList<String[]> data, String[] footers)
     {
         this.title = title;
+        this.headers = headers;
+        this.columns = headers;
+        this.numColumn = headers.length;
         this.data = data;
         this.footers = footers;
-        this.numColumn = headers.length;
-
-        this.columnWidths = new int[this.numColumn];
-
-        for (int i = 0; i < data.getHead().getData().length; i++)
-        {
-            int maxLength = 0;
-            for (int j = 0; j < data.size(); j++)
-            {
-                Node<String[]> currentColumn = data.getNode(j);
-                int currentColumnWidth = currentColumn.getData()[i].length();
-                if (currentColumnWidth > maxLength)
-                    maxLength = Math.min(currentColumnWidth, MAX_COLUMN_WIDTH);
-            }
-
-            columnWidths[i] = Math.max(maxLength, headers[i].length()) + (PADDING * 2);
-        }
-
-        this.columns = headers;
-        for (int i = 0; i < numColumn; i++)
-        {
-            this.columns[i] = justify(this.columns[i], HorizontalAlign.CENTER, columnWidths[i]);
-        }
+        
+        calculateColumnWidths();
+        justifyHeaders();
 
         String[] temp = new String[numColumn];
         for (int i = 0; i < numColumn; i++)
@@ -153,7 +143,7 @@ public class TableRenderer {
             "",
             justify(title, HorizontalAlign.CENTER, this.tableWidth),
             this.lineSeparator,
-            '|' + String.join("|", this.columns) + '|',
+            '|' + String.join("|", this.headers) + '|',
             this.lineSeparator
         };
 
@@ -190,27 +180,6 @@ public class TableRenderer {
         this.renderFooter();
     }
 
-
-    // private int getColumnWidth(java.util.function.Function<Product, Integer> getAttribute, int minLength)
-    // {
-    //     for (String head: this.columns)
-
-    //     // PADDING1 + ALIGNED_ATTRIBUTE + PADDING2
-    //     return getMaxAttributeLength(getAttribute, minLength) + (PADDING * 2);
-    // }
-
-    // private int getMaxAttributeLength(java.util.function.Function<Product, Integer> getAttribute, int minLength)
-    // {
-    //     int maxLength = minLength;
-    //     for (int i = 0; i < availableProducts.size(); i++)
-    //     {
-    //         int attributeLength = getAttribute.apply(availableProducts.get(i));
-    //         if (attributeLength > maxLength)
-    //             maxLength = attributeLength;
-    //     }
-    //     return maxLength;
-    // }
-
     private static String justify(String string, HorizontalAlign align, int length)
     {
         String retval;
@@ -234,6 +203,12 @@ public class TableRenderer {
             retval = string;
         }
         return retval;
+    }
+
+    private void justifyHeaders()
+    {
+        for (int i = 0; i < this.numColumn; i++)
+            this.headers[i] = justify(this.headers[i], HorizontalAlign.CENTER, this.columnWidths[i]);
     }
 
     public void rerender()

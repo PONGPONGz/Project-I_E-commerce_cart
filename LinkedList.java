@@ -113,6 +113,7 @@ public class LinkedList<T> implements List<T>, Iterable<T> {
         return this.head;
     }
 
+    @SuppressWarnings("unchecked")
     public T[] toArray()
     {
         T[] retval = (T[])new Object[size];

@@ -16,30 +16,7 @@ public class TableRenderer {
     private int tableHeight = 0;
     private int tableWidth = 0;
 
-    static LinkedList<String> splitTextIntoLinesOfMaxLength(String str, int maxCharInLine) {
-        LinkedList<String> lines = new LinkedList<>();
-        StringBuilder line = new StringBuilder(maxCharInLine);
-        int offset = 0;
-
-        while (offset < str.length() && maxCharInLine < str.length() - offset) {
-            int spaceToWrapAt = offset + MAX_COLUMN_WIDTH;
-            if (offset < spaceToWrapAt) {
-                line.append(str, offset, spaceToWrapAt);
-                offset = spaceToWrapAt + 1;
-            } else {
-                line.append(str, offset, offset + maxCharInLine);
-                offset += maxCharInLine;
-            }
-
-            lines.add(line.toString());
-            line.setLength(0);
-        }
-
-        line.append(str.substring(offset));
-        lines.add(line.toString());
-
-        return lines;
-    }
+    
 
     private void calculateColumnWidths()
     {
@@ -56,23 +33,14 @@ public class TableRenderer {
         }
     }
 
-    public void update(String[] headers, LinkedList<String[]> data)
+    private void generateLineSeparator()
     {
-        this.columns = headers;
-        this.headers = headers;
-        this.data = data;
-        calculateColumnWidths();
-        justifyHeaders();
-
         String[] temp = new String[numColumn];
         for (int i = 0; i < numColumn; i++)
             temp[i] = "-".repeat(columnWidths[i]);
 
         this.lineSeparator = '+' + String.join("+", temp) + '+';
         this.tableWidth = this.lineSeparator.length();
-
-        for(int i = 0; i < numColumn; i++)
-            this.footers[i] = justify(this.footers[i], HorizontalAlign.LEFT, this.columnWidths[i]);
     }
 
     public TableRenderer(String title, String[] headers, LinkedList<String[]> data, String[] footers)
@@ -86,16 +54,22 @@ public class TableRenderer {
         
         calculateColumnWidths();
         justifyHeaders();
+        generateLineSeparator();
+        justifyFooters();
+    }
 
-        String[] temp = new String[numColumn];
-        for (int i = 0; i < numColumn; i++)
-            temp[i] = "-".repeat(columnWidths[i]);
+    public void update(String[] headers, LinkedList<String[]> data, String[] footers)
+    {
+        this.headers = headers;
+        this.columns = headers;
+        this.numColumn = headers.length;
+        this.data = data;
+        this.footers = footers;
 
-        this.lineSeparator = '+' + String.join("+", temp) + '+';
-        this.tableWidth = this.lineSeparator.length();
-
-        for(int i = 0; i < numColumn; i++)
-            this.footers[i] = justify(this.footers[i], HorizontalAlign.LEFT, this.columnWidths[i]);
+        calculateColumnWidths();
+        justifyHeaders();
+        generateLineSeparator();
+        justifyFooters();
     }
 
     // A method to output table so we can track number of lines.
@@ -113,7 +87,7 @@ public class TableRenderer {
         ArrayList<LinkedList<String>> allContents = new ArrayList<>();
         for (String paragraph: contents)
         {
-            LinkedList<String> cellData = splitTextIntoLinesOfMaxLength(paragraph, MAX_COLUMN_WIDTH);
+            LinkedList<String> cellData = Utils.splitTextIntoLinesOfMaxLength(paragraph, MAX_COLUMN_WIDTH);
             allContents.add(cellData);
             if (cellData.size() > maxParagraphSize)
                 maxParagraphSize = cellData.size();
@@ -211,12 +185,9 @@ public class TableRenderer {
             this.headers[i] = justify(this.headers[i], HorizontalAlign.CENTER, this.columnWidths[i]);
     }
 
-    public void rerender()
+    private void justifyFooters()
     {
-        int temp = this.tableHeight;
-        System.out.print(String.format("\033[%dA\r\033[J", this.tableHeight));
-        this.tableHeight = 0;
-        this.render();
-        System.out.println("Rerendered " + temp);
+        for(int i = 0; i < numColumn; i++)
+            this.footers[i] = justify(this.footers[i], HorizontalAlign.LEFT, this.columnWidths[i]);
     }
 }

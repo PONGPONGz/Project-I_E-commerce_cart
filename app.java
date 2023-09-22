@@ -1,6 +1,10 @@
+import java.io.IOException;
+import java.util.Scanner;
+
 class app
 {
     private static final String APP_TITLE = "E-Commerce Cart System";
+    private static final int    EXIT_KEY  = 9;
 
     private static String[] generateTableHeaders(Cart cart)
     {
@@ -36,15 +40,9 @@ class app
         return data;
     }
 
-    public static void main(String[] args) throws InterruptedException
+    private static String[] generateTableFooters(Cart cart)
     {
-        ArrayList<Product> availableProducts = Product.loadProductsFromCSV("Products.csv");
-
-        Cart cart = new Cart();
-        String[] headers = generateTableHeaders(cart);
-        LinkedList<String[]> data = generateTableData(availableProducts, cart);
-
-        String[] footers = {
+        return new String[] {
             "",
             "",
             "",
@@ -52,14 +50,32 @@ class app
             "",
             String.format("Total: $%.2f", cart.getTotalPrice())
         };
+    }
 
-        TableRenderer renderer = new TableRenderer(APP_TITLE, headers, data, footers);
-        renderer.render();
-        Thread.sleep(2000);
-        cart.addByProductId(1);
-        System.out.println(cart.size());
-        data = generateTableData(availableProducts, cart);
-        renderer.update(generateTableHeaders(cart), data);
-        renderer.render();
+    public static void main(String[] args) throws IOException
+    {
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Product> availableProducts = Product.loadProductsFromCSV("Products.csv");
+
+        Cart cart = new Cart();
+
+        String[] headers          = generateTableHeaders(cart);
+        LinkedList<String[]> data = generateTableData(availableProducts, cart);
+        String[] footers          = generateTableFooters(cart);
+
+        TableRenderer renderer    = new TableRenderer(APP_TITLE, headers, data, footers);
+        while (true)
+        {
+            renderer.render();
+            cart.addByProductId(1);
+            renderer.update(generateTableHeaders(cart), generateTableData(availableProducts, cart), generateTableFooters(cart));
+            renderer.render();
+
+            int inp = scanner.nextInt();
+            if (inp == EXIT_KEY)
+                break;
+        }
+
+        scanner.close();
     }
 }

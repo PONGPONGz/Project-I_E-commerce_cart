@@ -1,5 +1,9 @@
+import java.util.Scanner;
+
 public class Utils
-{
+{   
+    private static Scanner scanner = new Scanner(System.in);
+
     public static LinkedList<String> splitTextIntoLinesOfMaxLength(String str, int maxCharInLine) {
         LinkedList<String> lines = new LinkedList<>();
         StringBuilder line = new StringBuilder(maxCharInLine);
@@ -23,5 +27,16 @@ public class Utils
         lines.add(line.toString());
 
         return lines;
+    }
+
+    public static int readIntInRange(String prompt, int from, int to)
+    {
+        while (true)
+        {
+            System.out.print(prompt);
+            int currentInt = scanner.nextInt();
+            if (currentInt >= from && currentInt <= to)
+                return currentInt;
+        }
     }
 }

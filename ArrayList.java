@@ -116,7 +116,6 @@ public class ArrayList<T> implements Iterable<T>, List<T> {
     private void strip(int from, int to)
     {
         int size = this.size - 1 - to;
-        System.out.println("Striping from: " + from + " to " + to + " size " + size);
         if (size > 0)
             System.arraycopy(this.data, from, this.data, to, size);
 

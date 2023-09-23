@@ -27,6 +27,22 @@ public class Cart {
         return total;
     }
 
+    public String[] getCartSummary()
+    {
+        int sizeOfDistinctProduct = 0;
+        ArrayList<Integer> seen = new ArrayList<>();
+        for (Product product: this.items)
+        {
+            System.out.println(product.getId());
+            if (!seen.contains(product.getId()))
+            {
+                seen.add(product.getId());
+            }
+            
+        }
+        return new String[5];
+    }
+
     public void addByProductId(int productId)
     {
         ArrayList<Product> availableProducts = Product.getAvailableProducts();

@@ -39,4 +39,9 @@ public class Utils
                 return currentInt;
         }
     }
+
+    public static void closeScanner()
+    {
+        scanner.close();
+    }
 }

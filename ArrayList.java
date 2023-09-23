@@ -30,6 +30,16 @@ public class ArrayList<T> implements Iterable<T>, List<T> {
         this(DEFAULT_SIZE);
     }
 
+    public boolean contains(T element)
+    {
+        for (T e: this.data)
+        {
+            if (e.equals(element))
+                return true;
+        }
+        return false;
+    }
+
     public T get(int index)
     {
         assertRange(index);

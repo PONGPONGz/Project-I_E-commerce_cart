@@ -16,52 +16,6 @@ public class TableRenderer {
     private int tableHeight = 0;
     private int tableWidth = 0;
 
-    public static String[] generateTableHeaders(Cart cart)
-    {
-        System.out.println(cart.size());
-        return new String[] {"ID", "Name", "Description", "Price", "Stock Count", String.format("Cart (%d / %d)", cart.size(), Cart.MAX_CART_ITEMS)};
-    }
-
-    public static LinkedList<String[]> generateTableData(ArrayList<Product> products, Cart cart)
-    {
-        LinkedList<String[]> data = new LinkedList<>();
-        Node<Product> currentNode = cart.getItems().getHead();
-
-        int dataLength = Math.max(products.size(), cart.getItems().size());
-        for (int i = 0; i < dataLength; i++)
-        {
-            Product product = null;
-            if (i < products.size())
-                product = products.get(i);
-            
-            data.add(new String[] { 
-                product != null ? String.format("%02d", product.getId()) : "",
-                product != null ? product.getName() : "",
-                product != null ? product.getDescription() : "",
-                product != null ? String.format("$%.2f", product.getPrice()) : "",
-                product != null ? String.valueOf(product.getStockCount()) : "",
-                currentNode != null ? ((i + 1) + ": " + currentNode.getData().toString()) : ""
-            });
-
-            if (currentNode != null)
-                currentNode = currentNode.getNextNode();
-        }
-
-        return data;
-    }
-
-    public static String[] generateTableFooters(Cart cart)
-    {
-        return new String[] {
-            "",
-            "",
-            "",
-            "",
-            "",
-            String.format("Total: $%.2f", cart.getTotalPrice())
-        };
-    }
-
     private void calculateColumnWidths()
     {
         this.columnWidths = new int[this.numColumn];
@@ -157,15 +111,29 @@ public class TableRenderer {
 
     private void renderHeader()
     {
-        String[] lines = {
-            "",
-            justify(title, HorizontalAlign.CENTER, this.tableWidth),
-            this.lineSeparator,
-            '|' + String.join("|", this.headers) + '|',
-            this.lineSeparator
-        };
+        if (this.title != null)
+        {
+            String[] lines = {
+                "",
+                justify(title, HorizontalAlign.CENTER, this.tableWidth),
+                this.lineSeparator,
+                '|' + String.join("|", this.headers) + '|',
+                this.lineSeparator
+            };
 
-        writeLines(lines);
+            writeLines(lines);
+        }
+        else
+        {
+            String[] lines = {
+                "",
+                this.lineSeparator,
+                '|' + String.join("|", this.headers) + '|',
+                this.lineSeparator
+            };
+
+            writeLines(lines);
+        }
     }
 
     private void renderData()
@@ -196,6 +164,11 @@ public class TableRenderer {
         this.renderHeader();
         this.renderData();
         this.renderFooter();
+    }
+
+    public static TableRendererBuilder builder()
+    {
+        return new TableRendererBuilder();
     }
 
     private static String justify(String string, HorizontalAlign align, int length)

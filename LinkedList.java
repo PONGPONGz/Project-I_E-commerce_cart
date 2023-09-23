@@ -108,9 +108,52 @@ public class LinkedList<T> implements List<T>, Iterable<T> {
         return this.size == 0;
     }
 
+    public void clear()
+    {
+        Node<T> node = this.head;
+        while (node != null)
+        {
+            Node<T> temp = node.getNextNode();
+            node.setNextNode(null);
+            node.setData(null);
+            node = temp;
+        }
+        
+        this.head = null;
+        this.size = 0;
+    }
+
     public Node<T> getHead()
     {
         return this.head;
+    }
+
+    public int indexOf(Object o) {
+        int index = 0;
+        if (o==null) 
+        {
+            for (Node<T> e = this.head.getNextNode(); e != null; e = e.getNextNode()) 
+            {
+                if (e.getData()==null)
+                    return index;
+                index++;
+            }
+        } 
+        else 
+        {
+            for (Node<T> e = this.head.getNextNode(); e != null; e = e.getNextNode())
+            {
+                if (o.equals(e.getData()))
+                    return index;
+                index++;
+            }
+        }
+        return -1;
+    }
+
+    public boolean contains(T object)
+    {
+        return indexOf(object) != -1;
     }
 
     @SuppressWarnings("unchecked")

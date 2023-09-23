@@ -21,4 +21,9 @@ public class Node<T> {
     {
         return data;
     }
+
+    public void setData(T newData)
+    {
+        this.data = newData;
+    }
 }

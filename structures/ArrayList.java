@@ -1,5 +1,9 @@
+package structures;
+
+import java.util.Iterator;
+
 @SuppressWarnings("unchecked")
-public class ArrayList<T> {
+public class ArrayList<T> implements Iterable<T>, List<T> {
     private static final int DEFAULT_SIZE  = 10;    // Default allocation size if no capacity specified in the constructor.
     private static final int OVERGROW_SIZE = 3;     // Amount to preallocate when "data" reaches max capacity.
 
@@ -26,6 +30,16 @@ public class ArrayList<T> {
     public ArrayList()
     {
         this(DEFAULT_SIZE);
+    }
+
+    public boolean contains(T element)
+    {
+        for (T e: this)
+        {
+            if (e.equals(element))
+                return true;
+        }
+        return false;
     }
 
     public T get(int index)
@@ -69,6 +83,11 @@ public class ArrayList<T> {
         return this.size;
     }
 
+    public boolean isEmpty()
+    {
+        return this.size == 0;
+    }
+
     @Override
     public String toString()
     {
@@ -79,10 +98,31 @@ public class ArrayList<T> {
         return String.format("[%s]", String.join(", ", strings));
     }
 
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private int currentIndex = 0;
+
+            @Override
+            public boolean hasNext() {
+                return currentIndex < size && data[currentIndex] != null;
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new java.util.NoSuchElementException();
+                }
+                T element = (T)data[currentIndex];
+                currentIndex++;
+                return element;
+            }
+        };
+    }
+
     private void strip(int from, int to)
     {
         int size = this.size - 1 - to;
-        System.out.println("Striping from: " + from + " to " + to + " size " + size);
         if (size > 0)
             System.arraycopy(this.data, from, this.data, to, size);
 

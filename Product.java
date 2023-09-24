@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import structures.ArrayList;
+
 public class Product {
     private static ArrayList<Product> availableProducts = new ArrayList<>();
 
@@ -11,30 +13,33 @@ public class Product {
     private float price;
     private int stockCount;
 
-    public static void loadProductsFromCSV(String filepath)
+    public static ArrayList<Product> loadProductsFromCSV(String filepath)
     {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filepath)))
+        if (availableProducts.isEmpty())
         {
-            reader.readLine();          // Ignore first line of csv
-            String currentLine;
-            while ((currentLine = reader.readLine()) != null)
+            try (BufferedReader reader = new BufferedReader(new FileReader(filepath)))
             {
-                String[] product          = currentLine.split(",");
-                int productId             = Integer.parseInt(product[0]);
-                int stockCount            = Integer.parseInt(product[4]);
-                String productName        = product[1];
-                String productDescription = product[2];
-                float price               = Float.parseFloat(product[3]);
+                reader.readLine();          // Ignore first line of csv
+                String currentLine;
+                while ((currentLine = reader.readLine()) != null)
+                {
+                    String[] product          = currentLine.split(",");
+                    int productId             = Integer.parseInt(product[0]);
+                    int stockCount            = Integer.parseInt(product[4]);
+                    String productName        = product[1];
+                    String productDescription = product[2];
+                    float price               = Float.parseFloat(product[3]);
 
-                availableProducts.add(new Product(productId, productName, price, productDescription, stockCount));
+                    availableProducts.add(new Product(productId, productName, price, productDescription, stockCount));
+                }
+            }
+            catch (IOException exception)
+            {
+                System.err.println(exception.getMessage());
             }
         }
-        catch (IOException exception)
-        {
-            System.err.println(exception.getMessage());
-        }
 
-        System.out.println("#" + availableProducts.size() + " products loaded.");
+        return availableProducts;
     }
 
     public static ArrayList<Product> getAvailableProducts()
@@ -74,5 +79,11 @@ public class Product {
     public int getStockCount()
     {
         return this.stockCount;
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("%s - $%.2f", this.name, this.price);
     }
 }

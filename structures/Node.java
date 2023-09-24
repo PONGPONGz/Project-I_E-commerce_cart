@@ -1,3 +1,5 @@
+package structures;
+
 public class Node<T> {
     private T data;
     private Node<T> nextNode;
@@ -20,5 +22,10 @@ public class Node<T> {
     public T getData()
     {
         return data;
+    }
+
+    public void setData(T newData)
+    {
+        this.data = newData;
     }
 }

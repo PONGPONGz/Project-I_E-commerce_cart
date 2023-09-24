@@ -1,3 +1,7 @@
+import structures.ArrayList;
+import structures.LinkedList;
+import structures.Node;
+
 class app
 {
     private static final String APP_TITLE = "E-Commerce Cart System";
@@ -54,9 +58,7 @@ class app
 
     public static LinkedList<String[]> generateCartData(Cart cart)
     {
-        LinkedList<String[]> data = new LinkedList<>();
-        cart.getCartSummary();
-        return data;
+        return cart.getCartSummary();
     }
 
     public static String[] generateCartFooters(Cart cart)
@@ -68,6 +70,28 @@ class app
             "",
             "",
             String.format("Total: $%.2f", cart.getTotalPrice())
+        };
+    }
+
+    public static String[] generateInvoiceHeaders(Cart cart)
+    {
+        return new String[] {"BILL TO", "", "", "", "", ""};
+    }
+
+    public static LinkedList<String[]> generateInvoiceData(Cart cart)
+    {
+        return cart.getCartSummary();
+    }
+
+    public static String[] generateInvoiceFooters(Cart cart)
+    {
+        return new String[] {
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
         };
     }
 
@@ -92,9 +116,6 @@ class app
         actionManager.render();
         while (actionManager.isRunning)
         {
-            // storeRenderer.renderTable();
-            // actionManager.render();
-
             int lastOptionNumber = ActionManager.AVAILABLE_ACTIONS.length - 1;
             int action = Utils.readIntInRange(String.format("\nEnter your action (0 - %d): ", lastOptionNumber), 0, lastOptionNumber);
             if (actionManager.assertAction(action))

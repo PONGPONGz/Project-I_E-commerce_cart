@@ -1,8 +1,11 @@
+import structures.LinkedList;
+
 public class TableRendererBuilder {
     private String title;
     private String[] headers;
     private LinkedList<String[]> data;
     private String[] footers;
+    private boolean renderLineSeparator = true;
 
     public TableRendererBuilder title(String title) {
         this.title = title;
@@ -24,7 +27,13 @@ public class TableRendererBuilder {
         return this;
     }
 
+    public TableRendererBuilder renderLineSeparator(boolean state)
+    {
+        this.renderLineSeparator = state;
+        return this;
+    }
+
     public TableRenderer build() {
-        return new TableRenderer(title, headers, data, footers);
+        return new TableRenderer(title, headers, data, footers, renderLineSeparator);
     }
 }

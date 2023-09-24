@@ -1,4 +1,7 @@
+import java.util.Arrays;
 import java.util.Scanner;
+
+import structures.LinkedList;
 
 public class Utils
 {   
@@ -31,13 +34,33 @@ public class Utils
 
     public static int readIntInRange(String prompt, int from, int to)
     {
+        String line;
         while (true)
         {
-            System.out.print(prompt);
-            int currentInt = scanner.nextInt();
-            if (currentInt >= from && currentInt <= to)
-                return currentInt;
+            try
+            {
+                System.out.print(prompt);
+                line = scanner.nextLine();
+                int currentInt = Integer.parseInt(line);
+                if (currentInt >= from && currentInt <= to)
+                    return currentInt;
+            }
+            catch (Exception e)
+            {
+
+            }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T[] subArray(T[] array, int from, int to) {
+        int length = to - from;
+        if (length <= 0) {
+            throw new IllegalArgumentException("Invalid subarray bounds");
+        }
+
+        T[] newArray = Arrays.copyOfRange(array, from, to);
+        return newArray;
     }
 
     public static void closeScanner()

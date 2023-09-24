@@ -1,3 +1,7 @@
+import structures.ArrayList;
+import structures.LinkedList;
+import structures.Node;
+
 public class Cart {
     public static final int MAX_CART_ITEMS = 15;
 
@@ -18,6 +22,16 @@ public class Cart {
         return this.items.size();
     }
 
+    public void clear()
+    {
+        this.items.clear();
+    }
+
+    public boolean isEmpty()
+    {
+        return this.size() == 0;
+    }
+
     public float getTotalPrice()
     {
         float total = 0f;
@@ -27,34 +41,57 @@ public class Cart {
         return total;
     }
 
-    public String[] getCartSummary()
+    public LinkedList<String[]> getCartSummary()
     {
-        int sizeOfDistinctProduct = 0;
+        LinkedList<String[]> retval = new LinkedList<>();
         ArrayList<Integer> seen = new ArrayList<>();
         for (Product product: this.items)
         {
-            System.out.println(product.getId());
             if (!seen.contains(product.getId()))
             {
                 seen.add(product.getId());
+                int quantity = countDuplicates(product.getId());
+                String[] row = {
+                    String.format("%2d", product.getId()),
+                    product.getName(),
+                    product.getDescription(),
+                    String.valueOf(quantity),
+                    String.format("$%.2f", product.getPrice() * quantity),
+                    String.valueOf(product.getStockCount())
+                };
+                retval.add(row);
             }
             
         }
-        return new String[5];
+        return retval;
     }
 
-    public void addByProductId(int productId)
+    public boolean addByProductId(int productId)
     {
+        return addByProductId(productId, 1);
+    }
+
+    public boolean addByProductId(int productId, int quantity)
+    {
+        if ((this.size() + quantity) > Cart.MAX_CART_ITEMS)
+        { 
+            System.out.println(String.format("Cart is full. Quantity of %d exceeds max capacity of %d", quantity, Cart.MAX_CART_ITEMS));   
+            return false;
+        }
+
         ArrayList<Product> availableProducts = Product.getAvailableProducts();
         for (int i = 0; i < availableProducts.size(); i++)
         {
             Product product = availableProducts.get(i);
             if (product.getId() == productId)
             {
-                this.items.add(product);
-                break;
+                for (int j = 0; j < quantity; j++)
+                    this.items.add(product);
+                return true;
             }
         }
+
+        return false;
     }
 
     public void changeOrder(int index1, int index2)
@@ -81,5 +118,16 @@ public class Cart {
         }
         allItemsName[this.items.size()] = String.valueOf(this.getTotalPrice());
         return String.join(" -> ", allItemsName);
+    }
+
+    private int countDuplicates(int productId)
+    {
+        int count = 0;
+        for (Product product: this.items)
+        {
+            if (product.getId() == productId)
+                count++;
+        }
+        return count;
     }
 }

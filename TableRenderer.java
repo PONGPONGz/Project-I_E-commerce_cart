@@ -1,3 +1,6 @@
+import structures.ArrayList;
+import structures.LinkedList;
+
 public class TableRenderer {
     private enum HorizontalAlign { LEFT, CENTER };
 
@@ -16,11 +19,15 @@ public class TableRenderer {
     private int tableHeight = 0;
     private int tableWidth = 0;
 
+    private boolean renderLineSeparator;
+
     private void calculateColumnWidths()
     {
         this.columnWidths = new int[this.numColumn];
         for (int i = 0; i < this.numColumn; i++) {
-            int maxLength = this.columns[i].length();
+            // Starts with max length of headers or footers.
+            int maxLength = Math.max(this.columns[i].length(), this.footers[i].length());
+            // Find max in headers, footers, and data
             for (String[] row : this.data) {
                 int cellLength = row[i].length();
                 if (cellLength > maxLength) {
@@ -41,7 +48,7 @@ public class TableRenderer {
         this.tableWidth = this.lineSeparator.length();
     }
 
-    public TableRenderer(String title, String[] headers, LinkedList<String[]> data, String[] footers)
+    public TableRenderer(String title, String[] headers, LinkedList<String[]> data, String[] footers, boolean renderLineSeparator)
     {
         this.title = title;
         this.headers = headers;
@@ -49,7 +56,13 @@ public class TableRenderer {
         this.numColumn = headers.length;
         this.data = data;
         this.footers = footers;
-        
+        this.renderLineSeparator = renderLineSeparator;
+        System.out.println("Data:");
+        for (String[] e: data)
+        {
+            System.out.println(String.join(" ", e));
+        }
+
         calculateColumnWidths();
         justifyHeaders();
         generateLineSeparator();
@@ -91,7 +104,10 @@ public class TableRenderer {
                 maxParagraphSize = cellData.size();
         }
 
-        String[] lines = new String[maxParagraphSize + 1];
+        String[] lines = new String[maxParagraphSize + (this.renderLineSeparator ? 1 : 0)];
+        if (this.renderLineSeparator)
+            lines[0] = lineSeparator;        // prepend lineseparator
+
         for (int i = 0; i < maxParagraphSize; i++)
         {
             String[] temp = new String[allContents.size()];
@@ -102,9 +118,11 @@ public class TableRenderer {
                 else
                     temp[j] = justify(allContents.get(j).getNode(i).getData(), HorizontalAlign.LEFT, this.columnWidths[j]);
             }
-            lines[i] = '|' + String.join("|", temp) + '|';
+            lines[i+(this.renderLineSeparator ? 1 : 0)] = '|' + String.join("|", temp) + '|';
         }
-        lines[maxParagraphSize] = lineSeparator;        // append lineseparator
+
+        // if (this.renderLineSeparator)
+        //     lines[maxParagraphSize] = lineSeparator;        // append lineseparator
 
         writeLines(lines);
     }
@@ -118,7 +136,6 @@ public class TableRenderer {
                 justify(title, HorizontalAlign.CENTER, this.tableWidth),
                 this.lineSeparator,
                 '|' + String.join("|", this.headers) + '|',
-                this.lineSeparator
             };
 
             writeLines(lines);
@@ -129,7 +146,6 @@ public class TableRenderer {
                 "",
                 this.lineSeparator,
                 '|' + String.join("|", this.headers) + '|',
-                this.lineSeparator
             };
 
             writeLines(lines);
@@ -138,12 +154,16 @@ public class TableRenderer {
 
     private void renderData()
     {
+        if (!this.renderLineSeparator)
+            this.writeLines(new String[] {this.lineSeparator});
+
         for (int i = 0; i < this.data.size(); i++)
         {
             String[] temp = new String[this.numColumn];
             for (int j = 0; j < this.numColumn; j++)
                 temp[j] = this.data.getNode(i).getData()[j];
 
+            // System.out.println(String.format("writeData(%s)", String.join(" ", temp)));
             this.writeData(temp);
         }
     }
@@ -151,6 +171,7 @@ public class TableRenderer {
     private void renderFooter()
     {
         String[] lines = {
+            this.lineSeparator,
             ' ' + String.join(" ", this.footers) + ' ',
             "",
             "#".repeat(this.tableWidth),

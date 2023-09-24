@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import structures.ArrayList;
+
 public class Product {
     private static ArrayList<Product> availableProducts = new ArrayList<>();
 

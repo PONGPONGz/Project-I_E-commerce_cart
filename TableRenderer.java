@@ -5,7 +5,7 @@ public class TableRenderer {
     private enum HorizontalAlign { LEFT, CENTER };
 
     private static final int PADDING = 1;
-    private static final int MAX_COLUMN_WIDTH = 50;
+    private static final int MAX_COLUMN_WIDTH = 20;
 
     private String   title;
     private String   lineSeparator;
@@ -16,7 +16,6 @@ public class TableRenderer {
     private LinkedList<String[]> data;
     private String[] footers;
 
-    private int tableHeight = 0;
     private int tableWidth = 0;
 
     private boolean renderLineSeparator;
@@ -57,11 +56,6 @@ public class TableRenderer {
         this.data = data;
         this.footers = footers;
         this.renderLineSeparator = renderLineSeparator;
-        System.out.println("Data:");
-        for (String[] e: data)
-        {
-            System.out.println(String.join(" ", e));
-        }
 
         calculateColumnWidths();
         justifyHeaders();
@@ -83,13 +77,10 @@ public class TableRenderer {
         justifyFooters();
     }
 
-    // A method to output table so we can track number of lines.
     private void writeLines(String[] lines)
     {
         for (String line: lines)
             System.out.println(line);
-        
-        this.tableHeight += lines.length;
     }
 
     private void writeData(String[] contents)
@@ -121,34 +112,56 @@ public class TableRenderer {
             lines[i+(this.renderLineSeparator ? 1 : 0)] = '|' + String.join("|", temp) + '|';
         }
 
-        // if (this.renderLineSeparator)
-        //     lines[maxParagraphSize] = lineSeparator;        // append lineseparator
-
         writeLines(lines);
     }
 
     private void renderHeader()
     {
-        if (this.title != null)
+        boolean isHeadersEmpty = true;
+        for (String header: this.headers)
         {
-            String[] lines = {
-                "",
-                justify(title, HorizontalAlign.CENTER, this.tableWidth),
-                this.lineSeparator,
-                '|' + String.join("|", this.headers) + '|',
-            };
+            if (!header.isBlank())
+            {
+                isHeadersEmpty = false;
+                break;
+            }
+        }
 
-            writeLines(lines);
+        if (isHeadersEmpty)
+        {
+            if (this.title != null)
+            {
+                String[] lines = {
+                    "",
+                    justify(title, HorizontalAlign.CENTER, this.tableWidth),
+                };
+
+                writeLines(lines);
+            }
         }
         else
         {
-            String[] lines = {
-                "",
-                this.lineSeparator,
-                '|' + String.join("|", this.headers) + '|',
-            };
+            if (this.title != null)
+            {
+                String[] lines = {
+                    "",
+                    justify(title, HorizontalAlign.CENTER, this.tableWidth),
+                    this.lineSeparator,
+                    '|' + String.join("|", this.headers) + '|',
+                };
 
-            writeLines(lines);
+                writeLines(lines);
+            }
+            else
+            {
+                String[] lines = {
+                    "",
+                    this.lineSeparator,
+                    '|' + String.join("|", this.headers) + '|',
+                };
+
+                writeLines(lines);
+            }
         }
     }
 
@@ -163,7 +176,6 @@ public class TableRenderer {
             for (int j = 0; j < this.numColumn; j++)
                 temp[j] = this.data.getNode(i).getData()[j];
 
-            // System.out.println(String.format("writeData(%s)", String.join(" ", temp)));
             this.writeData(temp);
         }
     }
@@ -175,7 +187,6 @@ public class TableRenderer {
             ' ' + String.join(" ", this.footers) + ' ',
             "",
             "#".repeat(this.tableWidth),
-            ""
         };
         writeLines(lines);
     }

@@ -1,8 +1,9 @@
 import structures.ArrayList;
 
 public class ActionManager {
-    public enum ACTION { ADD_TO_CART, CHANGE_ORDER, REMOVE_FROM_CART, CLEAR_CART, CHECKOUT, EXIT }
+    public enum ACTION { DISPLAY_STORE, ADD_TO_CART, CHANGE_ORDER, REMOVE_FROM_CART, CLEAR_CART, CHECKOUT, EXIT }
     public static final String[] AVAILABLE_ACTIONS = {
+        "Display Store",
         "Add to cart",
         "Change cart order",
         "Remove from cart",
@@ -32,11 +33,13 @@ public class ActionManager {
 
     public void perform(ACTION action)
     {
-        //System.out.println("Action: " + action.toString() + " performed.");
         switch (action)
         {
+            case DISPLAY_STORE:
+                storeRenderer.renderTable();
+                break;
             case ADD_TO_CART:
-                int productId = Utils.readIntInRange("Enter product id: ", 0, products.size());
+                int productId = Utils.readIntInRange("Enter product id: ", 1, products.size());
                 int quantity  = Utils.readIntInRange("Enter quantity: ", 0, Cart.MAX_CART_ITEMS);
                 if (cart.addByProductId(productId, quantity))
                 {
@@ -92,14 +95,21 @@ public class ActionManager {
                 storeRenderer.renderTable();
                 break;
             case CHECKOUT:
-                // Render table of cart and prompt user confirmation
-                // TableRenderer cartRenderer = TableRenderer.builder()
-                //     .headers(app.generateCartHeaders(cart))
-                //     .data(app.generateCartData(cart))
-                //     .footers(app.generateCartFooters(cart))
-                //     .build();
-                // cartRenderer.renderTable();
-                checkout();
+                if (cart.isEmpty())
+                {
+                    System.out.println("Cart is empty. Add some items to cart.");
+                    return;
+                }
+
+                System.out.println("Type \"D\" to apply a discount code; Type \"C\" to continue.");
+                char choice = Utils.readChar("Enter your choice: ");
+                if (choice == 'D')
+                {
+                    String discountCode = Utils.readLine("Apply discount code: ");
+                    cart.applyDiscountCode(discountCode);
+                }
+
+                cart.checkout();             
                 break;
             case EXIT:
                 this.isRunning = false;
@@ -111,15 +121,8 @@ public class ActionManager {
 
     public void render()
     {
-        System.out.println("Available options:");
+        System.out.println("\nAvailable options:");
         for (int i = 0; i < AVAILABLE_ACTIONS.length; i++)
             System.out.println(String.format("  %d. %s", i, AVAILABLE_ACTIONS[i]));
-    }
-
-    private void checkout()
-    {
-        Invoice invoice = new Invoice(cart);
-        invoice.render();
-        // TODO: ask for discount
     }
 }

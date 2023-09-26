@@ -23,7 +23,7 @@ public class Product {
                 String currentLine;
                 while ((currentLine = reader.readLine()) != null)
                 {
-                    String[] product          = currentLine.split(",");
+                    String[] product          = currentLine.split(";");
                     int productId             = Integer.parseInt(product[0]);
                     int stockCount            = Integer.parseInt(product[4]);
                     String productName        = product[1];
@@ -79,6 +79,11 @@ public class Product {
     public int getStockCount()
     {
         return this.stockCount;
+    }
+
+    public void setStockCount(int newStockCount)
+    {
+        this.stockCount = newStockCount;
     }
 
     @Override

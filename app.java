@@ -4,7 +4,8 @@ import structures.Node;
 
 class app
 {
-    private static final String APP_TITLE = "E-Commerce Cart System";
+    // Find first available discount code. (Set doesn't have method get(), so stream is useful in this case.)
+    private static final String APP_TITLE = String.format("E-Commerce Cart System (Apply code: %s)", Cart.DISCOUNT_CODES.keySet().stream().findFirst().get().toString());
 
     public static String[] generateStoreHeaders(Cart cart)
     {
@@ -29,7 +30,7 @@ class app
                 product != null ? product.getDescription() : "",
                 product != null ? String.format("$%.2f", product.getPrice()) : "",
                 product != null ? String.valueOf(product.getStockCount()) : "",
-                currentNode != null ? ((i + 1) + ": " + currentNode.getData().toString()) : ""
+                currentNode != null ? (i + ": " + currentNode.getData().toString()) : ""
             });
 
             if (currentNode != null)
@@ -97,6 +98,10 @@ class app
 
     public static void main(String[] args)
     {
+        System.err.println("IMPORTANT: Adjust MAX_COLUMN_WIDTH in TableRenderer.java If the table is messed up.");
+        System.err.println("IMPORTANT: Adjust MAX_COLUMN_WIDTH in TableRenderer.java If the table is messed up.");
+        System.err.println("IMPORTANT: Adjust MAX_COLUMN_WIDTH in TableRenderer.java If the table is messed up.\n");
+
         ArrayList<Product> availableProducts = Product.loadProductsFromCSV("Products.csv");
 
         Cart cart = new Cart();
@@ -113,9 +118,9 @@ class app
             .build();
         ActionManager actionManager  = new ActionManager(storeRenderer, availableProducts, cart);
         storeRenderer.renderTable();
-        actionManager.render();
         while (actionManager.isRunning)
         {
+            actionManager.render();
             int lastOptionNumber = ActionManager.AVAILABLE_ACTIONS.length - 1;
             int action = Utils.readIntInRange(String.format("\nEnter your action (0 - %d): ", lastOptionNumber), 0, lastOptionNumber);
             if (actionManager.assertAction(action))

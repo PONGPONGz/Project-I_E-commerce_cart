@@ -1,6 +1,11 @@
-id,name,description,price,stockCount
-1,SAMSUNG Galaxy Buds 2,SAMSUNG Galaxy Yeah BuddyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyySAMSUNG Galaxy Yeah BuddyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyySAMSUNG Galaxy Yeah Buddyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy,10000,1000
-2,Product b,very great,110,17
-3,Substance c,very elegant,200,100
-4,Drug d,very decent,5000,1
-5,L-Carnitine 500mg,Dietary supplement product,300,550
+ID;Name;Description;Price;StockCount
+1;Protein Powder;High-quality protein for muscle growth;29.99;100
+2;Creatine Monohydrate;Enhances strength and power;19.99;75
+3;Workout Gloves;Non-slip, breathable gloves for lifting;14.99;50
+4;Yoga Mat;Extra thick and comfortable;24.99;30
+5;Dumbbell Set;Adjustable dumbbells for home gym;129.99;20
+6;Running Shoes;Cushioned running shoes;59.99;60
+7;Fitness Tracker;Tracks steps, heart rate, and more;79.99;40
+8;Resistance Bands;Set of resistance bands for workouts;9.99;100
+9;Gym Bag;Spacious and durable gym bag;34.99;45
+10;Foam Roller;Helps with muscle recovery;19.99;55

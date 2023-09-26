@@ -81,6 +81,11 @@ public class Product {
         return this.stockCount;
     }
 
+    public void setStockCount(int newStockCount)
+    {
+        this.stockCount = newStockCount;
+    }
+
     @Override
     public String toString()
     {

@@ -69,7 +69,6 @@ public class Utils
         return line.charAt(0);
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> T[] subArray(T[] array, int from, int to) {
         int length = to - from;
         if (length <= 0) {

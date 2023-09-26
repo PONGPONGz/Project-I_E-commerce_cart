@@ -7,9 +7,10 @@ public class ArrayList<T> implements Iterable<T>, List<T> {
     private static final int DEFAULT_SIZE  = 10;    // Default allocation size if no capacity specified in the constructor.
     private static final int OVERGROW_SIZE = 3;     // Amount to preallocate when "data" reaches max capacity.
 
-    private T[] data;
+    private T[] data;                               // Array to store elements
     private int size;                               // Number of exist elements in "data"
 
+    // Constructor that takes an array of elements as input
     public ArrayList(T[] raw_input)
     {
         this.data = (T[])(new Object[raw_input.length]);
@@ -19,6 +20,7 @@ public class ArrayList<T> implements Iterable<T>, List<T> {
         this.size = this.data.length;
     }
 
+    // Constructor that takes a capacity as input
     public ArrayList(int capacity)
     {
         if (capacity < 0)
@@ -27,11 +29,13 @@ public class ArrayList<T> implements Iterable<T>, List<T> {
         this.data = (T[])(new Object[capacity]);
     }
 
+    // Default constructor that will call another constructor with DEFAULT_SIZE
     public ArrayList()
     {
         this(DEFAULT_SIZE);
     }
 
+    // Check if the list contains a specific element
     public boolean contains(T element)
     {
         for (T e: this)
@@ -42,47 +46,50 @@ public class ArrayList<T> implements Iterable<T>, List<T> {
         return false;
     }
 
+    // Get the element at index
     public T get(int index)
     {
         assertRange(index);
         return this.data[index];
     }
 
+    // Set the element at index
     public void set(int index, T element)
     {
         assertRange(index);
         this.data[index] = element;
     }
 
+    // Append an element to the end of the list
     public void add(T element)
     {
         ensureCapacity(this.size + 1);
         this.data[this.size++] = element;
     }
 
-    public void remove(int index)
-    {
+    // Remove an element at a specific index
+    public void remove(int index) {
         assertRange(index);
         strip(index + 1, index);
     }
 
-    public void remove(T object)
-    {
-        for (int i = 0; i < this.size; i++)
-        {
-            if ((this.data[i] == null && object == null) || this.data[i].equals(object))
-            {
+    // Remove a specific element from the list
+    public void remove(T object) {
+        for (int i = 0; i < this.size; i++) {
+            if ((this.data[i] == null && object == null) || this.data[i].equals(object)) {
                 strip(i + 1, i);
                 break;
             }
         }
     }
 
+    // Return number of elements in the list
     public int size()
     {
         return this.size;
     }
 
+    // Return whether the list is empty
     public boolean isEmpty()
     {
         return this.size == 0;
@@ -120,6 +127,7 @@ public class ArrayList<T> implements Iterable<T>, List<T> {
         };
     }
 
+    // Remove elements from 'from' index to 'to' index and shift the array order
     private void strip(int from, int to)
     {
         int size = this.size - 1 - to;
@@ -129,21 +137,23 @@ public class ArrayList<T> implements Iterable<T>, List<T> {
         this.data[--this.size] = null;       // Remove duplicate of last element since we shift array order
     }
 
+    // Reallocate the array to a new capacity
     private void reallocate(int minSize)
     {
         T oldData[] = this.data;
         int newCapacity = minSize + OVERGROW_SIZE;
         this.data = (T[])(new Object[newCapacity]);
         System.arraycopy(oldData, 0, this.data, 0, this.size);
-        System.out.println("ArrayList max size reallocated to: " + newCapacity);
     }
 
+    // Ensure that the array has enough capacity for a specified minimum size
     private void ensureCapacity(int minSize)
     {
         if (minSize > this.data.length)
             reallocate(minSize);
     }
 
+    // Check if a number is within the valid range of indices
     private void assertRange(int number)
     {
         if (number > this.size || number < 0)

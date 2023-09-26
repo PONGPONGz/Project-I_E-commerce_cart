@@ -52,6 +52,23 @@ public class Utils
         }
     }
 
+    public static String readLine(String prompt)
+    {
+        System.out.print(prompt);
+        return scanner.nextLine();
+    }
+
+    public static char readChar(String prompt)
+    {
+        System.out.print(prompt);
+        String line = scanner.nextLine();
+        while (line.length() > 1 || line.length() <= 0)
+        {
+            line = scanner.nextLine();
+        }
+        return line.charAt(0);
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> T[] subArray(T[] array, int from, int to) {
         int length = to - from;

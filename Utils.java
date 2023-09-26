@@ -16,7 +16,7 @@ public class Utils
             int spaceToWrapAt = offset + maxCharInLine;
             if (offset < spaceToWrapAt) {
                 line.append(str, offset, spaceToWrapAt);
-                offset = spaceToWrapAt + 1;
+                offset = spaceToWrapAt;
             } else {
                 line.append(str, offset, offset + maxCharInLine);
                 offset += maxCharInLine;

@@ -23,7 +23,8 @@ public class Product {
                 String currentLine;
                 while ((currentLine = reader.readLine()) != null)
                 {
-                    String[] product          = currentLine.split(",");
+                    System.out.println(currentLine);
+                    String[] product          = currentLine.split(";");
                     int productId             = Integer.parseInt(product[0]);
                     int stockCount            = Integer.parseInt(product[4]);
                     String productName        = product[1];

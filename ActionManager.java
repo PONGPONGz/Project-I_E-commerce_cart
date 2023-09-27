@@ -14,13 +14,13 @@ public class ActionManager {
 
     public boolean isRunning;
 
-    private TableRenderer      storeRenderer;
     private ArrayList<Product> products;
     private Cart               cart;
+    private Store              store;
 
-    public ActionManager(TableRenderer storeRenderer, ArrayList<Product> products, Cart cart)
+    public ActionManager(Store store, ArrayList<Product> products, Cart cart)
     {
-        this.storeRenderer = storeRenderer;
+        this.store = store;
         this.products = products;
         this.cart = cart;
         this.isRunning = true;
@@ -36,20 +36,13 @@ public class ActionManager {
         switch (action)
         {
             case DISPLAY_STORE:
-                storeRenderer.renderTable();
+                store.render();
                 break;
             case ADD_TO_CART:
                 int productId = Utils.readIntInRange("Enter product id: ", 1, products.size());
                 int quantity  = Utils.readIntInRange("Enter quantity: ", 0, Cart.MAX_CART_ITEMS);
                 if (cart.addByProductId(productId, quantity))
-                {
-                    storeRenderer.update(
-                        app.generateStoreHeaders(cart), 
-                        app.generateStoreData(products, cart), 
-                        app.generateStoreFooters(cart)
-                    );
-                    storeRenderer.renderTable();
-                }
+                    store.refresh();
                 
                 break;
             case CHANGE_ORDER:
@@ -62,12 +55,7 @@ public class ActionManager {
                 int firstNum = Utils.readIntInRange("Enter first index to swap: ", 0, cart.size() - 1);
                 int secondNum = Utils.readIntInRange("Enter second index to swap: ", 0, cart.size() - 1);
                 cart.changeOrder(firstNum, secondNum);
-                storeRenderer.update(
-                    app.generateStoreHeaders(cart), 
-                    app.generateStoreData(products, cart), 
-                    app.generateStoreFooters(cart)
-                );
-                storeRenderer.renderTable();
+                store.refresh();
                 break;
             case REMOVE_FROM_CART:
                 if (cart.isEmpty())
@@ -78,21 +66,11 @@ public class ActionManager {
 
                 int removeIndex = Utils.readIntInRange("Enter index to remove: ", 0, cart.size() - 1);
                 cart.removeByIndex(removeIndex);
-                storeRenderer.update(
-                    app.generateStoreHeaders(cart), 
-                    app.generateStoreData(products, cart), 
-                    app.generateStoreFooters(cart)
-                );
-                storeRenderer.renderTable();
+                store.refresh();
                 break;
             case CLEAR_CART:
                 cart.clear();
-                storeRenderer.update(
-                    app.generateStoreHeaders(cart), 
-                    app.generateStoreData(products, cart), 
-                    app.generateStoreFooters(cart)
-                );
-                storeRenderer.renderTable();
+                store.refresh();
                 break;
             case CHECKOUT:
                 if (cart.isEmpty())

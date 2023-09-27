@@ -1,9 +1,8 @@
 import structures.ArrayList;
 import structures.LinkedList;
 
-public class TableRenderer {
-    private enum HorizontalAlign { LEFT, CENTER };
-
+public class TableRenderer 
+{
     private static final int PADDING = 1;
     private static final int MAX_COLUMN_WIDTH = 20;
 
@@ -19,33 +18,6 @@ public class TableRenderer {
     private int tableWidth = 0;
 
     private boolean renderLineSeparator;
-
-    private void calculateColumnWidths()
-    {
-        this.columnWidths = new int[this.numColumn];
-        for (int i = 0; i < this.numColumn; i++) {
-            // Starts with max length of headers or footers.
-            int maxLength = Math.max(this.columns[i].length(), this.footers[i].length());
-            // Find max in headers, footers, and data
-            for (String[] row : this.data) {
-                int cellLength = row[i].length();
-                if (cellLength > maxLength) {
-                    maxLength = cellLength;
-                }
-            }
-            this.columnWidths[i] = Math.min(maxLength, MAX_COLUMN_WIDTH) + (PADDING * 2);
-        }
-    }
-
-    private void generateLineSeparator()
-    {
-        String[] temp = new String[numColumn];
-        for (int i = 0; i < numColumn; i++)
-            temp[i] = "-".repeat(columnWidths[i]);
-
-        this.lineSeparator = '+' + String.join("+", temp) + '+';
-        this.tableWidth = this.lineSeparator.length();
-    }
 
     public TableRenderer(String title, String[] headers, LinkedList<String[]> data, String[] footers, boolean renderLineSeparator)
     {
@@ -77,6 +49,33 @@ public class TableRenderer {
         justifyFooters();
     }
 
+    private void calculateColumnWidths()
+    {
+        this.columnWidths = new int[this.numColumn];
+        for (int i = 0; i < this.numColumn; i++) {
+            // Starts with max length of headers or footers.
+            int maxLength = Math.max(this.columns[i].length(), this.footers[i].length());
+            // Find max in headers, footers, and data
+            for (String[] row : this.data) {
+                int cellLength = row[i].length();
+                if (cellLength > maxLength) {
+                    maxLength = cellLength;
+                }
+            }
+            this.columnWidths[i] = Math.min(maxLength, MAX_COLUMN_WIDTH) + (PADDING * 2);
+        }
+    }
+
+    private void generateLineSeparator()
+    {
+        String[] temp = new String[numColumn];
+        for (int i = 0; i < numColumn; i++)
+            temp[i] = "-".repeat(columnWidths[i]);
+
+        this.lineSeparator = '+' + String.join("+", temp) + '+';
+        this.tableWidth = this.lineSeparator.length();
+    }
+    
     private void writeLines(String[] lines)
     {
         for (String line: lines)
@@ -105,9 +104,9 @@ public class TableRenderer {
             for (int j = 0; j < allContents.size(); j++)
             {
                 if (i >= allContents.get(j).size())
-                    temp[j] = justify(" ", HorizontalAlign.LEFT, this.columnWidths[j]);
+                    temp[j] = Utils.justify(" ", Utils.HorizontalAlign.LEFT, this.columnWidths[j], PADDING);
                 else
-                    temp[j] = justify(allContents.get(j).getNode(i).getData(), HorizontalAlign.LEFT, this.columnWidths[j]);
+                    temp[j] = Utils.justify(allContents.get(j).getNode(i).getData(), Utils.HorizontalAlign.LEFT, this.columnWidths[j], PADDING);
             }
             lines[i+(this.renderLineSeparator ? 1 : 0)] = '|' + String.join("|", temp) + '|';
         }
@@ -133,7 +132,7 @@ public class TableRenderer {
             {
                 String[] lines = {
                     "",
-                    justify(title, HorizontalAlign.CENTER, this.tableWidth),
+                    Utils.justify(title, Utils.HorizontalAlign.CENTER, this.tableWidth, PADDING),
                 };
 
                 writeLines(lines);
@@ -145,7 +144,7 @@ public class TableRenderer {
             {
                 String[] lines = {
                     "",
-                    justify(title, HorizontalAlign.CENTER, this.tableWidth),
+                    Utils.justify(title, Utils.HorizontalAlign.CENTER, this.tableWidth, PADDING),
                     this.lineSeparator,
                     '|' + String.join("|", this.headers) + '|',
                 };
@@ -203,40 +202,15 @@ public class TableRenderer {
         return new TableRendererBuilder();
     }
 
-    private static String justify(String string, HorizontalAlign align, int length)
-    {
-        String retval;
-        if (string.length() < length)
-        {
-            int leftPadding;
-            switch (align)
-            {
-                case CENTER:
-                    leftPadding = (length - string.length()) / 2;
-                    break;
-                case LEFT:
-                default:
-                    leftPadding = PADDING;
-            }
-
-            retval = " ".repeat(leftPadding) + string + " ".repeat(length - string.length() - leftPadding);
-        }
-        else
-        {
-            retval = string;
-        }
-        return retval;
-    }
-
     private void justifyHeaders()
     {
         for (int i = 0; i < this.numColumn; i++)
-            this.headers[i] = justify(this.headers[i], HorizontalAlign.CENTER, this.columnWidths[i]);
+            this.headers[i] = Utils.justify(this.headers[i], Utils.HorizontalAlign.CENTER, this.columnWidths[i], PADDING);
     }
 
     private void justifyFooters()
     {
         for(int i = 0; i < numColumn; i++)
-            this.footers[i] = justify(this.footers[i], HorizontalAlign.LEFT, this.columnWidths[i]);
+            this.footers[i] = Utils.justify(this.footers[i], Utils.HorizontalAlign.LEFT, this.columnWidths[i], PADDING);
     }
 }

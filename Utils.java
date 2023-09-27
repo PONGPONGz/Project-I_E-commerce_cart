@@ -5,7 +5,34 @@ import structures.LinkedList;
 
 public class Utils
 {   
+    public enum HorizontalAlign { LEFT, CENTER };
+
     private static Scanner scanner = new Scanner(System.in);
+
+    public static String justify(String string, HorizontalAlign align, int length, int padding)
+    {
+        String retval;
+        if (string.length() < length)
+        {
+            int leftPadding;
+            switch (align)
+            {
+                case CENTER:
+                    leftPadding = (length - string.length()) / 2;
+                    break;
+                case LEFT:
+                default:
+                    leftPadding = padding;
+            }
+
+            retval = " ".repeat(leftPadding) + string + " ".repeat(length - string.length() - leftPadding);
+        }
+        else
+        {
+            retval = string;
+        }
+        return retval;
+    }
 
     public static LinkedList<String> splitTextIntoLinesOfMaxLength(String str, int maxCharInLine) {
         LinkedList<String> lines = new LinkedList<>();

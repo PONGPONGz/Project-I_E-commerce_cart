@@ -20,6 +20,28 @@ public class Cart {
         this.items = new LinkedList<>();        // Initialize empty cart
     }
 
+    public String[] generateHeaders()
+    {
+        return new String[] {"ID", "Name", "Description", "Quantity", "Price", "Stock Count"};
+    }
+
+    public LinkedList<String[]> generateData()
+    {
+        return this.getCartSummary();
+    }
+
+    public String[] generateFooters()
+    {
+        return new String[] {
+            "",
+            "",
+            "",
+            "",
+            "",
+            String.format("Total: $%.2f", this.getTotalPrice())
+        };
+    }
+
     // Return items in the cart as LinkedList
     public LinkedList<Product> getItems()
     {

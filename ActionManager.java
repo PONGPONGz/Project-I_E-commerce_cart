@@ -36,6 +36,7 @@ public class ActionManager {
         switch (action)
         {
             case DISPLAY_STORE:
+                store.refresh();
                 store.render();
                 break;
             case ADD_TO_CART:
